@@ -1,0 +1,29 @@
+# Nombre del workflow
+name: Saludo Workflow
+
+# Controla cuándo se ejecutará el workflow
+on:
+  # Dispara el workflow en eventos de push solo para la rama "main"
+  push:
+    branches: [ "main" ]
+
+# Un workflow se compone de uno o más jobs
+jobs:
+  # Este workflow contiene un único job llamado "saludar-al-usuario"
+  saludar-al-usuario:
+    # El tipo de runner en el que se ejecutará el job
+    runs-on: ubuntu-latest
+
+    # Los pasos representan una secuencia de tareas que se ejecutarán como parte del job
+    steps:
+      # 1. Descarga el código en el runner
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      # 2. Imprime un saludo al usuario que hizo push
+      - name: Saludar al usuario
+        run: echo "¡Hola, ${{ github.actor }}! Gracias por hacer push."
+
+       # 3. Lista todos los archivos y carpetas
+      - name: Listar archivos
+        run: ls -la
