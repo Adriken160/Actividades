@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           # Usamos una versión reciente y estable de Python
-          python-version: '3.12'
+          python-version: '3.x'
 
       # 2. Instalar las dependencias
       - name: Instalar dependencias
