@@ -1,1 +1,0 @@
-Adrián Tercero Pérez
