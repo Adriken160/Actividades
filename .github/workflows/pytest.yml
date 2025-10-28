@@ -4,7 +4,7 @@ name: Pruebas de Python con Pytest
 # Configura el workflow para que se dispare con cada push a la rama main
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "Repositorio-Clonado" ]
 
 # Define los jobs del workflow
 jobs:
