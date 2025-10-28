@@ -1,29 +1,43 @@
-# Nombre del workflow
-name: Saludo Workflow
+# 5. Nombre del workflow
+name: generacion
 
-# Controla cuándo se ejecutará el workflow
+# 6. Configura el workflow para que se dispare con cada push a la rama main
 on:
-  # Dispara el workflow en eventos de push solo para la rama "main"
   push:
-    branches: [ "main" ]
+    branches: [ "Enunciado3" ]
 
-# Un workflow se compone de uno o más jobs
+# 7. Define un único job llamado "generar-codigo"
 jobs:
-  # Este workflow contiene un único job llamado "saludar-al-usuario"
-  saludar-al-usuario:
-    # El tipo de runner en el que se ejecutará el job
+  generar-codigo:
+    # 8. Configura el job para que se ejecute en ubuntu-latest
     runs-on: ubuntu-latest
 
-    # Los pasos representan una secuencia de tareas que se ejecutarán como parte del job
+    # 9. Define los pasos del job
     steps:
-      # 1. Descarga el código en el runner
-      - name: Descargar código
+      # 9.1. Paso para descargar el código
+      - name: Descargar el código
         uses: actions/checkout@v4
 
-      # 2. Imprime un saludo al usuario que hizo push
-      - name: Saludar al usuario
-        run: echo "¡Hola, ${{ github.actor }}! Gracias por hacer push."
+      # 9.2. Paso para configurar Java 17
+      - name: Configurar Java 17 (Temurin)
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-       # 3. Lista todos los archivos y carpetas
-      - name: Listar archivos
-        run: ls -la
+      # 9.3. Paso para ejecutar el generador de OpenAPI
+      - name: Generar código Python-Flask
+        run: java -jar openapi-generator-cli.jar generate -i api.yaml -g python-flask -o ./openapi_server
+
+      # 9.4. Paso para comprimir la salida
+      - name: Comprimir el código generado (zip)
+        run: zip -r openapi_server.zip openapi_server
+
+      # 9.5. Paso para subir el fichero comprimido como un artefacto
+      - name: Subir artefacto (openapi_server.zip)
+        uses: actions/upload-artifact@v4
+        with:
+          # Nombre del artefacto que aparecerá en GitHub
+          name: python-flask-server
+          # Ruta al archivo que se va a subir
+          path: openapi_server.zip
