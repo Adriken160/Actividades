@@ -1,38 +1,39 @@
-# Nombre del workflow
-name: Pruebas de Python con Pytest
+# This is a basic workflow to help you get started with Actions
 
-# Configura el workflow para que se dispare con cada push a la rama main
+name: pytest
+
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "Repositorio-Clonado" ]
+    branches: [ "master" ]
 
-# Define los jobs del workflow
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # 7. Define un job llamado tests
+  # This workflow contains a single job called "saludar al usuario"
   tests:
-    # 8. Configura este job para que se ejecute en un runner de Ubuntu
-    # (Usaremos actions/setup-python para instalar la versión de Python)
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # 9. El job debe tener los siguientes pasos
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # 1. Descargar el código en el runner
-      - name: Descargar el código
-        uses: actions/checkout@v4
 
-      # Paso extra (pero necesario) para configurar el entorno de Python
-      - name: Configurar Python
-        uses: actions/setup-python@v5
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
-          # Usamos una versión reciente y estable de Python
-          python-version: '3.13.7'
+          python-version: '3.x'   # Esto 
 
-      # 2. Instalar las dependencias
-      - name: Instalar dependencias
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 3. Lanzar el comando pytest
-      - name: Ejecutar pruebas con pytest
+      # Runs a set of commands using the runners shell
+      - name: Run a one-line script
         run: pytest
