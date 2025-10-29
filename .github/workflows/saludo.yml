@@ -5,7 +5,7 @@ name: Saludo Workflow
 on:
   # Dispara el workflow en eventos de push solo para la rama "main"
   push:
-    branches: [ "main" ]
+    branches: [ "Enunciado-1" ]
 
 # Un workflow se compone de uno o más jobs
 jobs:
