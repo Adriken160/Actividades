@@ -1,43 +1,44 @@
-# 5. Nombre del workflow
+# This is a basic workflow to help you get started with Actions
+
 name: generacion
 
-# 6. Configura el workflow para que se dispare con cada push a la rama main
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "Enunciado3" ]
+    branches: [ "main" ]
 
-# 7. Define un único job llamado "generar-codigo"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "saludar al usuario"
   generar-codigo:
-    # 8. Configura el job para que se ejecute en ubuntu-latest
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # 9. Define los pasos del job
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # 9.1. Paso para descargar el código
-      - name: Descargar el código
-        uses: actions/checkout@v4
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
 
-      # 9.2. Paso para configurar Java 17
-      - name: Configurar Java 17 (Temurin)
-        uses: actions/setup-java@v3
+      # Runs a single command using the runners shell
+      - uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 9.3. Paso para ejecutar el generador de OpenAPI
-      - name: Generar código Python-Flask
-        run: java -jar openapi-generator-cli.jar generate -i api.yaml -g python-flask -o ./openapi_server
+      # Runs a set of commands using the runners shell
+      - name: Run a one-line script
+        run: |
+          java -jar openapi-generator-cli.jar generate -i api.yaml -g python-flask -o ./openapi_server
 
-      # 9.4. Paso para comprimir la salida
-      - name: Comprimir el código generado (zip)
+      - name: Execute jar
         run: zip -r openapi_server.zip openapi_server
 
-      # 9.5. Paso para subir el fichero comprimido como un artefacto
-      - name: Subir artefacto (openapi_server.zip)
+      - name: Subir artefacto
         uses: actions/upload-artifact@v4
         with:
-          # Nombre del artefacto que aparecerá en GitHub
-          name: python-flask-server
-          # Ruta al archivo que se va a subir
-          path: openapi_server.zip
+          name: openapi-server
+          path: openapi_server.zip 

@@ -1,157 +1,44 @@
-openapi: 3.0.3 # CAMBIO 1: Versión más compatible que 3.1.0
+
+openapi: 3.0.3
 info:
-  title: "Audira API: ÉPICA 1 – Gestión de Usuarios y Comunidad"
+  title: API de Métricas de Artistas
   version: 1.0.0
-  description: |
-    Esta es la especificación para la Épica 1 de la plataforma Audira.
-    Incluye todos los microservicios y operaciones relacionadas con la gestión de perfiles de usuario, métricas, interacción social y comunicación.
+  description: API para obtener métricas de artistas como albums, seguidores y streams.
 
-    **Microservicios incluidos:**
-    - **Métricas y Estadísticas:** Endpoints para consultar estadísticas de usuarios, artistas y de la plataforma en general.
-    - **Usuario (Perfil):** Operaciones para el registro, autenticación, y gestión de perfiles y seguidores.
-    - **Valoraciones y Comentarios:** Gestión de valoraciones y comentarios sobre el contenido musical.
-    - **Comunicación:** Endpoints para el contacto con soporte, FAQs y notificaciones de usuario.
-  contact:
-    name: Equipo de Desarrollo Audira
-    email: dev-support@audira.io
 servers:
-- url: https://api.audira.io/v1
-  description: Servidor de Producción
-- url: https://staging-api.audira.io/v1
-  description: Servidor de Staging
-- url: http://localhost:3000/api/v1
-  description: Servidor Local de Desarrollo
-tags:
-- name: User
-  description: "Operaciones relacionadas con usuarios, perfiles, autenticación y comunidad."
-- name: Metrics
-  description: Endpoints para obtener métricas y estadísticas de la plataforma.
-- name: Ratings & Comments
-  description: "Gestión de valoraciones, y comentarios de los usuarios."
-- name: Communication
-  description: "Endpoints para comunicación, soporte y FAQs."
-- name: Admin
-  description: Operaciones de administración y moderación.
+  - url: http://localhost:5000
+    description: Servidor local de desarrollo
 
-# CAMBIO 2: Añadido el campo "paths" (obligatorio)
-# Como no tienes endpoints definidos en este extracto, lo dejamos vacío.
-paths: {}
-
-components:
-  schemas:
-    ErrorResponse:
-      description: Respuesta de error genérica
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          examples:
-          - UNKNOWN_ERROR
-        message:
-          type: string
-          examples:
-          - Ocurrió un error inesperado
-        details:
-          type: object
-          additionalProperties: true
-          examples:
-          - internal_code: "100-A"
-        timestamp:
-          type: string
-          format: date-time
-          examples:
-          - 2024-01-15T10:30:00Z
-        path:
-          type: string
-          examples:
-          - /api/v1/some/resource
-        requestId:
-          type: string
-          format: uuid
-          examples:
-          - b4c8d2e0-5a6b-4c7d-8e9f-0a1b2c3d4e5f
-    NotFoundError:
-      description: Recurso no encontrado
-      content:
-        application/json:
+paths:
+  /metrics/artist/{id}:
+    get:
+      tags:
+        - metrics
+      summary: Obtener métricas de un artista específico
+      description: Retorna métricas relacionadas con el artista identificado por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del artista
           schema:
-            type: object
-            required:
-            - code
-            - message
-            properties:
-              code:
-                type: string
-                examples:
-                - NOT_FOUND
-              message:
-                type: string
-                examples:
-                - El recurso solicitado no fue encontrado
-              details:
+            type: string
+      responses:
+        '200':
+          description: Métricas del artista obtenidas exitosamente
+          content:
+            application/json:
+              schema:
                 type: object
-                additionalProperties: true
-                examples:
-                - resource: user
-                  id: "123"
-              timestamp:
-                type: string
-                format: date-time
-                examples:
-                - 2024-01-15T10:30:00Z
-              path:
-                type: string
-                examples:
-                - /api/v1/users/123
-              requestId:
-                type: string
-                format: uuid
-                examples:
-                - b4c8d2e0-5a6b-4c7d-8e9f-0a1b2c3d4e5f
-    InternalServerError:
-      description: Error interno del servidor
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - code
-            - message
-            properties:
-              code:
-                type: string
-                examples:
-                - NOT_FOUND
-              message:
-                type: string
-                examples:
-                - El recurso solicitado no fue encontrado
-              details:
-                type: object
-                additionalProperties: true
-                examples:
-                - resource: user
-                  id: "123"
-              timestamp:
-                type: string
-                format: date-time
-                examples:
-                - 2024-01-15T10:30:00Z
-              path:
-                type: string
-                examples:
-                - /api/v1/users/123
-              requestId:
-                type: string
-                format: uuid
-                examples:
-                - b4c8d2e0-5a6b-4c7d-8e9f-0a1b2c3d4e5f
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: Token JWT para autenticación de usuarios.
+                properties:
+                  albums:
+                    type: integer
+                    description: Número de álbumes lanzados por el artista
+                  followers:
+                    type: integer
+                    description: Número de seguidores del artista
+                  streams:
+                    type: integer
+                    description: Total de reproducciones del artista
+        '404':
+          description: Artista no encontrado
